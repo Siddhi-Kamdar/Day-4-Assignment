@@ -1,8 +1,19 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+
+
+import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
+
 const Navbar: React.FC = () => {
     const [input, setInput] = useState("");
     const [open, setOpen] = useState(false);
+    const cartItems = useSelector((state: RootState) => state.cart.items);
+
+    const totalQty = cartItems.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+    );
 
     return (
         <nav
@@ -15,29 +26,22 @@ const Navbar: React.FC = () => {
             <h2 className="text-xl font-bold">E-Com</h2>
 
             <div className="flex gap-2">
-                <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Search products..."
-                    className="w-64 px-3 py-2 rounded bg-white text-black outline-none"
-                />
-                <button
-                    className="px-4 py-2 rounded bg-blue-500 text-black"
-                >
-                    Search
-                </button>
+                
                 <NavLink
-                    to="/shop"
+                    to="/shop/products"
                     className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
                 >
                     Products
                 </NavLink>
                 <NavLink
-                    to="/cart"
-                    className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+                    to="/shop/cart"
+                    className={({ isActive }) =>
+                        isActive || totalQty > 0
+                            ? "nav-link active"
+                            : "nav-link"
+                    }
                 >
-                    Cart
+                    Cart ({totalQty})
                 </NavLink>
                 <NavLink
                     to="/about"
@@ -46,9 +50,6 @@ const Navbar: React.FC = () => {
                     About
                 </NavLink>
             </div>
-            <button onClick={() => setOpen(true)} className="relative">
-                🛒
-            </button>
         </nav>
     );
 };

@@ -1,12 +1,15 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../store/cartSlice";
 
 interface Product {
     id: number;
     title: string;
     category: string;
     price: number;
-    image: string;
+    thumbnail: string;
 }
 
 const fetchProducts = async (): Promise<Product[]> => {
@@ -15,43 +18,59 @@ const fetchProducts = async (): Promise<Product[]> => {
         throw new Error("Failed to fetch products");
     }
     const data = await response.json();
-    if (!Array.isArray(data.products)) {
-        throw new Error("Invalid API response");
-    }
     return data.products;
 };
 
 const ProductList: React.FC = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const { data, error, isLoading, isError } = useQuery<Product[], Error>({
         queryKey: ["products"],
         queryFn: fetchProducts,
-        staleTime: 1000 * 60,
     });
 
     if (isLoading) return <p>Loading products...</p>;
     if (isError) return <p style={{ color: "red" }}>Error: {error.message}</p>;
-    if (!data || data.length === 0) return <p>No products found.</p>;
 
     return (
         <div>
-            {data.map((product) => (
+            {data!.map((product) => (
                 <div
                     key={product.id}
                     className="m-4 border rounded-xl p-4 shadow-sm flex flex-col gap-2"
                 >
                     <img
-        src={product.image}
-        alt="Image"
-        style={{ maxWidth: "300px", borderRadius: "8px" }}
-      />
-      <p>{product.image}</p>
+                        src={product.thumbnail}
+                        alt={product.title}
+                        style={{ maxWidth: "200px", borderRadius: "8px" }}
+                    />
+
                     <h3>{product.title}</h3>
                     <p>Category: {product.category}</p>
                     <p>Price: ${product.price}</p>
                     <button
-                        className="mt-auto bg-blue-500 text-black py-1 rounded text-sm"
+                        onClick={() => {
+                            dispatch(
+                                addToCart({
+                                    productId: product.id,
+                                    title: product.title,
+                                    price: product.price,
+                                    thumbnail: product.thumbnail,
+                                    quantity: 1,
+                                    customizationKey: "",
+                                })
+                            );
+                            navigate("/shop/cart");
+                        }}
                     >
                         Add to Cart
+                    </button>
+                    <button
+                        className="mt-auto bg-blue-500 text-black py-1 rounded text-sm"
+                        onClick={() => navigate(`/shop/product/${product.id}`)}
+                    >
+                        View Details
                     </button>
                 </div>
             ))}
