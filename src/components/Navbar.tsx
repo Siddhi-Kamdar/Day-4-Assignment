@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
 
     return (
         <nav
-            className="flex items-center justify-between p-4 gap-4"
+            className="w-full flex items-center justify-between px-6 py-4 sticky top-0 z-50 bg-black"
             style={{
                 backgroundColor: "var(--bg-color)",
                 color: "var(--text-color)"

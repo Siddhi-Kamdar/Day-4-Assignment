@@ -34,7 +34,7 @@ const ProductList: React.FC = () => {
     if (isError) return <p style={{ color: "red" }}>Error: {error.message}</p>;
 
     return (
-        <div>
+        <div className="gris grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {data!.map((product) => (
                 <div
                     key={product.id}
@@ -61,7 +61,6 @@ const ProductList: React.FC = () => {
                                     customizationKey: "",
                                 })
                             );
-                            navigate("/shop/cart");
                         }}
                     >
                         Add to Cart
