@@ -7,7 +7,6 @@ const Shop: React.FC = () => {
       <p >
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi asperiores, assumenda dignissimos cumque, iure delectus quam et perferendis placeat numquam similique amet suscipit sit deleniti corporis sunt aspernatur provident? Exercitationem.
       </p>
-      
     </section>
   );
 };
